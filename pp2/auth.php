@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'config/db.php';
+require_once 'functions.php';
 
 if (!empty($_SESSION['logged_in'])) {
     header("Location: index.php");
@@ -45,33 +46,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_enter'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Авторизация</title>
+    <title>Вход — DАЙКОМ Store</title>
 </head>
 <body>
 
 <?php require 'header.php'; ?>
 
-<div class="slide-itemlog">
-    <div class="container">
-        <h2>Авторизация</h2>
+<main class="auth-page">
+    <section class="auth-card">
+        <p class="eyebrow">Личный кабинет</p>
+        <h1>Вход в DАЙКОМ Store</h1>
+        <p>Войдите, чтобы оформить заказ, отслеживать доставку и видеть историю покупок.</p>
 
         <?php if ($error_message !== ''): ?>
-            <div class="error-message"><?= htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8') ?></div>
+            <div class="message-box error"><?= h($error_message) ?></div>
         <?php endif; ?>
 
-        <form method="POST">
-            <div class="form-group">
+        <form method="POST" class="auth-form">
+            <label>
+                Логин
                 <input type="text" name="login" placeholder="Логин" required>
-            </div>
+            </label>
 
-            <div class="form-group">
+            <label>
+                Пароль
                 <input type="password" name="password" placeholder="Пароль" required>
-            </div>
+            </label>
 
-            <button class="bton" type="submit" name="submit_enter">Войти</button>
+            <button class="btn btn-primary" type="submit" name="submit_enter">Войти</button>
+            <a class="ghost-link" href="register.php">Создать аккаунт</a>
         </form>
-    </div>
-</div>
+    </section>
+</main>
 
 </body>
 </html>

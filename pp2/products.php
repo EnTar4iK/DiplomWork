@@ -1,13 +1,82 @@
 <?php
 session_start();
 require 'config/db.php';
+require_once 'functions.php';
+
+$categories = fetch_categories($conn);
+$category = (int) ($_GET['category'] ?? 0);
+$sort = $_GET['sort'] ?? '';
+$query = trim($_GET['q'] ?? '');
+$minPrice = trim($_GET['min_price'] ?? '');
+$maxPrice = trim($_GET['max_price'] ?? '');
+
+$where = [];
+$params = [];
+$types = '';
+
+if ($category > 0) {
+    $where[] = 'p.category_id = ?';
+    $params[] = $category;
+    $types .= 'i';
+}
+
+if ($query !== '') {
+    $where[] = '(p.name LIKE ? OR p.short_description LIKE ? OR p.description LIKE ?)';
+    $like = '%' . $query . '%';
+    $params[] = $like;
+    $params[] = $like;
+    $params[] = $like;
+    $types .= 'sss';
+}
+
+if ($minPrice !== '') {
+    $where[] = 'p.price >= ?';
+    $params[] = (int) $minPrice;
+    $types .= 'i';
+}
+
+if ($maxPrice !== '') {
+    $where[] = 'p.price <= ?';
+    $params[] = (int) $maxPrice;
+    $types .= 'i';
+}
+
+$orderBy = 'ORDER BY p.id DESC';
+if ($sort === 'price_asc') {
+    $orderBy = 'ORDER BY p.price ASC';
+} elseif ($sort === 'price_desc') {
+    $orderBy = 'ORDER BY p.price DESC';
+} elseif ($sort === 'name_asc') {
+    $orderBy = 'ORDER BY p.name ASC';
+}
+
+$sql = "
+    SELECT p.*, c.name AS category_name
+    FROM products p
+    LEFT JOIN categories c ON c.id = p.category_id
+";
+
+if (!empty($where)) {
+    $sql .= ' WHERE ' . implode(' AND ', $where);
+}
+
+$sql .= " $orderBy";
+
+$stmt = $conn->prepare($sql);
+if ($params) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$products = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Товары</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог электроники — DАЙКОМ Store</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -15,80 +84,106 @@ require 'config/db.php';
 
 <?php require 'header.php'; ?>
 
-<?php
-$sort = $_GET['sort'] ?? '';
-$orderBy = '';
+<main class="page-shell catalog-page">
+    <section class="catalog-hero">
+        <div>
+            <p class="eyebrow">Каталог товаров</p>
+            <h1>Электроника в наличии и под заказ</h1>
+            <p>
+                Ноутбуки, компьютеры, мониторы, видеокарты, SSD, периферия и кресла.
+                Цены и наличие могут отличаться в розничных магазинах, менеджер подтвердит заказ.
+            </p>
+        </div>
+        <div class="catalog-hero-panel">
+            <strong><?= count($products) ?></strong>
+            <span>товаров найдено</span>
+        </div>
+    </section>
 
-switch ($sort) {
-    case 'price_asc':
-        $orderBy = "ORDER BY price ASC";
-        break;
-    case 'price_desc':
-        $orderBy = "ORDER BY price DESC";
-        break;
-    case 'name_asc':
-        $orderBy = "ORDER BY name ASC";
-        break;
-}
-?>
+    <form method="GET" class="catalog-layout">
+        <aside class="catalog-filters">
+            <h2>Фильтры</h2>
 
-<form method="GET" class="sort-form">
-    <select name="sort" onchange="this.form.submit()">
-        <option value="">Сортировка</option>
-        <option value="price_asc">Цена ↑</option>
-        <option value="price_desc">Цена ↓</option>
-        <option value="name_asc">Имя A-Z</option>
-    </select>
-</form>
+            <label>
+                Поиск
+                <input type="search" name="q" value="<?= h($query) ?>" placeholder="Например, RTX или Acer">
+            </label>
 
-<div class="products-container">
+            <label>
+                Категория
+                <select name="category">
+                    <option value="0">Все категории</option>
+                    <?php foreach ($categories as $item): ?>
+                        <option value="<?= (int) $item['id'] ?>" <?= $category === (int) $item['id'] ? 'selected' : '' ?>>
+                            <?= h($item['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
 
-<?php
-$sql = "SELECT * FROM products $orderBy";
-$result = $conn->query($sql);
+            <div class="filter-row">
+                <label>
+                    Цена от
+                    <input type="number" name="min_price" value="<?= h($minPrice) ?>" min="0" placeholder="0">
+                </label>
+                <label>
+                    до
+                    <input type="number" name="max_price" value="<?= h($maxPrice) ?>" min="0" placeholder="150000">
+                </label>
+            </div>
 
-while ($row = $result->fetch_assoc()):
-?>
+            <label>
+                Сортировка
+                <select name="sort">
+                    <option value="">Сначала новые</option>
+                    <option value="price_asc" <?= $sort === 'price_asc' ? 'selected' : '' ?>>Цена ↑</option>
+                    <option value="price_desc" <?= $sort === 'price_desc' ? 'selected' : '' ?>>Цена ↓</option>
+                    <option value="name_asc" <?= $sort === 'name_asc' ? 'selected' : '' ?>>Название A-Z</option>
+                </select>
+            </label>
 
-<div class="product-card">
-    <img class="product-img" src="images/<?= $row['image'] ?>" alt="">
+            <button class="btn btn-primary" type="submit">Применить</button>
+            <a class="btn btn-glass" href="products.php">Сбросить</a>
+        </aside>
 
-    <h3><?= $row['name'] ?></h3>
+        <section class="products-grid catalog-products">
+            <?php if (empty($products)): ?>
+                <div class="empty-state">
+                    <h2>Ничего не найдено</h2>
+                    <p>Попробуйте изменить фильтры или напишите нам — подберём технику под заказ.</p>
+                </div>
+            <?php endif; ?>
 
-    <div class="price"><?= $row['price'] ?> ₽</div>
+            <?php foreach ($products as $product): ?>
+                <article class="product-card">
+                    <?php if (!empty($product['badge'])): ?>
+                        <span class="product-badge"><?= h($product['badge']) ?></span>
+                    <?php endif; ?>
 
-    <button class="btn" onclick="addToCart(<?= $row['id'] ?>)">Добавить в корзину</button>
+                    <a class="product-media" href="product.php?id=<?= (int) $product['id'] ?>">
+                        <img src="<?= product_image($product['image']) ?>" alt="<?= h($product['name']) ?>">
+                    </a>
 
-    <button class="btn" onclick="openModal('<?= htmlspecialchars($row['description']) ?>')">
-        Подробнее
-    </button>
-</div>
+                    <div class="product-body">
+                        <span class="product-category"><?= h($product['category_name']) ?></span>
+                        <h3><a href="product.php?id=<?= (int) $product['id'] ?>"><?= h($product['name']) ?></a></h3>
+                        <p><?= h($product['short_description']) ?></p>
+                        <div class="stock-line">
+                            <span><?= (int) $product['stock'] > 0 ? 'В наличии' : 'Под заказ' ?></span>
+                            <span>Код: <?= (int) $product['id'] ?></span>
+                        </div>
+                        <div class="product-footer">
+                            <strong><?= money($product['price']) ?></strong>
+                            <a class="btn btn-small" href="add_to_cart.php?id=<?= (int) $product['id'] ?>">В корзину</a>
+                        </div>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </section>
+    </form>
+</main>
 
-<?php endwhile; ?>
-
-</div>
-
-<!-- MODAL -->
-<div id="modal" class="modal" onclick="closeModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <p id="modal-text"></p>
-    </div>
-</div>
-
-<script>
-function addToCart(id) {
-    window.location.href = "add_to_cart.php?id=" + id;
-}
-
-function openModal(text) {
-    document.getElementById("modal").style.display = "flex";
-    document.getElementById("modal-text").innerText = text;
-}
-
-function closeModal() {
-    document.getElementById("modal").style.display = "none";
-}
-</script>
+<?php require 'footer.php'; ?>
 
 </body>
 </html>

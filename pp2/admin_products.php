@@ -1,9 +1,16 @@
 <?php
 require 'auth_admin.php';
 require 'config/db.php';
+require_once 'functions.php';
 
-$result = $conn->query("SELECT * FROM products ORDER BY id DESC");
+$result = $conn->query("
+    SELECT p.*, c.name AS category_name
+    FROM products p
+    LEFT JOIN categories c ON c.id = p.category_id
+    ORDER BY p.id DESC
+");
 $products = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+$categories = fetch_categories($conn);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -24,8 +31,7 @@ $products = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                 <p class="admin-eyebrow">Каталог</p>
                 <h2>Управление товарами</h2>
                 <p class="admin-lead">
-                    Здесь можно быстро редактировать карточки товаров, удалять позиции
-                    и переходить к добавлению новых товаров.
+                    Здесь можно быстро редактировать карточки товаров, наличие, категории и изображения.
                 </p>
             </div>
 
@@ -45,7 +51,7 @@ $products = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                             <?php if (!empty($product['image'])): ?>
                                 <img
                                     class="product-img"
-                                    src="images/<?= rawurlencode($product['image']) ?>"
+                                    src="<?= product_image($product['image']) ?>"
                                     alt="<?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?>"
                                 >
                             <?php else: ?>
@@ -58,6 +64,14 @@ $products = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 
                             <form method="POST" action="update_product.php" class="admin-form-grid">
                                 <input type="hidden" name="id" value="<?= (int) $product['id'] ?>">
+
+                                <select name="category_id" required>
+                                    <?php foreach ($categories as $category): ?>
+                                        <option value="<?= (int) $category['id'] ?>" <?= (int) $product['category_id'] === (int) $category['id'] ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8') ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
 
                                 <input
                                     type="text"
@@ -76,6 +90,30 @@ $products = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                     step="1"
                                     required
                                 >
+
+                                <input
+                                    type="number"
+                                    name="stock"
+                                    value="<?= (int) $product['stock'] ?>"
+                                    placeholder="Остаток"
+                                    min="0"
+                                    step="1"
+                                    required
+                                >
+
+                                <input
+                                    type="text"
+                                    name="badge"
+                                    value="<?= htmlspecialchars($product['badge'], ENT_QUOTES, 'UTF-8') ?>"
+                                    placeholder="Бейдж"
+                                >
+
+                                <textarea
+                                    name="short_description"
+                                    rows="3"
+                                    placeholder="Краткое описание"
+                                    required
+                                ><?= htmlspecialchars($product['short_description'], ENT_QUOTES, 'UTF-8') ?></textarea>
 
                                 <textarea
                                     name="description"
