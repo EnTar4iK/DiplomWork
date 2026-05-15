@@ -1,0 +1,81 @@
+<?php
+require 'auth_admin.php';
+require 'config/db.php';
+
+function fetchTotal(mysqli $conn, string $sql): int
+{
+    $result = $conn->query($sql);
+
+    if ($result && ($row = $result->fetch_assoc())) {
+        return (int) $row['total'];
+    }
+
+    return 0;
+}
+
+$stats = [
+    'products' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM products"),
+    'orders' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM orders"),
+    'users' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM users"),
+    'newOrders' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM orders WHERE status = 'new'"),
+];
+?>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<?php require 'header.php'; ?>
+
+<div class="page-shell admin-page">
+    <section class="admin-hero">
+        <div>
+            <p class="admin-eyebrow">Панель управления</p>
+            <h2>Админ-панель магазина</h2>
+            <p class="admin-lead">
+                Здесь собраны все основные действия для управления магазином:
+                товары, заказы, пользователи и быстрый переход к добавлению новых позиций.
+            </p>
+        </div>
+
+        <a href="admin_add_product.php" class="admin-btn">Добавить товар</a>
+    </section>
+
+    <section class="admin-grid">
+        <a href="admin_products.php" class="admin-panel-card">
+            <span class="admin-card-label">Каталог</span>
+            <strong><?= $stats['products'] ?></strong>
+            <h3>Товары</h3>
+            <p>Редактирование, удаление и быстрый переход к карточкам товаров.</p>
+        </a>
+
+        <a href="admin_orders.php" class="admin-panel-card">
+            <span class="admin-card-label">Продажи</span>
+            <strong><?= $stats['orders'] ?></strong>
+            <h3>Заказы</h3>
+            <p>Контроль статусов заказов и работа с новыми заявками магазина.</p>
+        </a>
+
+        <a href="admin_users.php" class="admin-panel-card">
+            <span class="admin-card-label">Аккаунты</span>
+            <strong><?= $stats['users'] ?></strong>
+            <h3>Пользователи</h3>
+            <p>Поиск пользователей и управление ролями в административной зоне.</p>
+        </a>
+
+        <a href="admin_orders.php?status=new" class="admin-panel-card">
+            <span class="admin-card-label">Новые</span>
+            <strong><?= $stats['newOrders'] ?></strong>
+            <h3>Новые заказы</h3>
+            <p>Отдельный быстрый переход к заказам, которые ещё ждут обработки.</p>
+        </a>
+    </section>
+</div>
+
+</body>
+</html>
