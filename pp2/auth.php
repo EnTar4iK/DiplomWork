@@ -51,15 +51,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_enter'])) {
 
 <?php require 'header.php'; ?>
 
-<div class="slide-itemlog">
-    <div class="container">
+<main class="auth-page">
+    <section class="auth-card">
+        <p class="eyebrow">Личный кабинет</p>
         <h2>Авторизация</h2>
+        <p>Войдите, чтобы оформить заказ и посмотреть историю покупок.</p>
 
         <?php if ($error_message !== ''): ?>
             <div class="error-message"><?= htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" class="form-stack">
             <div class="form-group">
                 <input type="text" name="login" placeholder="Логин" required>
             </div>
@@ -70,8 +72,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_enter'])) {
 
             <button class="bton" type="submit" name="submit_enter">Войти</button>
         </form>
-    </div>
-</div>
+    </section>
+</main>
 
 </body>
 </html>

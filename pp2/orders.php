@@ -17,6 +17,7 @@ $user_id = $user['id'];
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мои заказы</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -24,32 +25,46 @@ $user_id = $user['id'];
 
 <?php require 'header.php'; ?>
 
-<h2 style="color:white; text-align:center;">Мои заказы</h2>
-
-<div class="products-container">
-
 <?php
-$sql = "SELECT o.*, p.name 
+$sql = "SELECT o.*, p.name
         FROM orders o
         JOIN products p ON o.product_id = p.id
         WHERE o.user_id = $user_id
         ORDER BY o.id DESC";
 
 $result = $conn->query($sql);
-
-while ($row = $result->fetch_assoc()):
+$orders = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 ?>
 
-<div class="product-card">
-    <h3><?= $row['name'] ?></h3>
-    <p>Количество: <?= $row['quantity'] ?></p>
-    <p>Сумма: <?= $row['total_price'] ?> ₽</p>
-    <p>Дата: <?= $row['created_at'] ?></p>
-</div>
+<main class="page-shell">
+    <section class="page-hero compact-hero">
+        <p class="eyebrow">История покупок</p>
+        <h1>Мои заказы</h1>
+        <p>Здесь отображаются заказы, созданные через корзину текущего аккаунта.</p>
+    </section>
 
-<?php endwhile; ?>
-
-</div>
+    <?php if (empty($orders)): ?>
+        <section class="empty-state">
+            <h2>Заказов пока нет</h2>
+            <p>Перейдите в каталог, добавьте технику в корзину и оформите первый заказ.</p>
+            <a class="btn btn-primary" href="products.php">Перейти в каталог</a>
+        </section>
+    <?php else: ?>
+        <section class="order-list">
+            <?php foreach ($orders as $row): ?>
+                <article class="order-card">
+                    <span class="product-category">Заказ #<?= (int) $row['id'] ?></span>
+                    <h3><?= htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8') ?></h3>
+                    <div class="order-meta">
+                        <p>Количество: <?= (int) $row['quantity'] ?></p>
+                        <p>Сумма: <?= number_format((int) $row['total_price'], 0, ',', ' ') ?> ₽</p>
+                        <p>Дата: <?= htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8') ?></p>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </section>
+    <?php endif; ?>
+</main>
 
 </body>
 </html>

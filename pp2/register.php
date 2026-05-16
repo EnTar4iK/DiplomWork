@@ -41,9 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_register'])) {
 
 <?php require 'header.php'; ?>
 
-<div class="slide-itemreg">
-    <div class="reg">
+<main class="auth-page">
+    <section class="auth-card register-card">
+        <p class="eyebrow">Новый аккаунт</p>
         <h2>Регистрация</h2>
+        <p>Создайте профиль, чтобы оформлять заказы и возвращаться к истории покупок.</p>
 
         <?php if ($errorMessage !== ''): ?>
             <div class="error-message"><?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8') ?></div>
@@ -53,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_register'])) {
             <div class="success-message"><?= htmlspecialchars($successMessage, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" class="form-stack">
             <div class="form-reg">
                 <input type="text" name="login" placeholder="Логин" required>
             </div>
@@ -74,8 +76,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_register'])) {
                 <a href="index.php" class="btn">Перейти на сайт</a>
             </div>
         <?php endif; ?>
-    </div>
-</div>
+    </section>
+</main>
 
 </body>
 </html>

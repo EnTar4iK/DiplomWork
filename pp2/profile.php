@@ -14,7 +14,8 @@
 <body>
     <?php require 'header.php';?>
 
-    <div class="profile">
+    <main class="page-shell">
+        <section class="profile-card">
         <?php
             require 'config/db.php';
 
@@ -30,16 +31,23 @@
 
                 if ($result->num_rows == 1) {
                     $user = $result->fetch_assoc();
-                
+                    $safeLogin = htmlspecialchars((string) $user["login"], ENT_QUOTES, 'UTF-8');
+                    $safeRole = htmlspecialchars((string) $_SESSION["role"], ENT_QUOTES, 'UTF-8');
+                    $safeTelephone = htmlspecialchars((string) $user["telephone"], ENT_QUOTES, 'UTF-8');
+
                     echo '
-                    <li>
+                    <p class="eyebrow">Личный кабинет</p>
+                    <h1>Профиль покупателя</h1>
+                    <div class="profile-list">
+                    <div class="profile-row">
                         <span class="label">Логин</span><br>
-                        <span class="value">(' . $user["login"] . ') (' . $_SESSION["role"] . ')</span>
-                    </li>
-                    <li> <span class="label">Телефон</span><br>
-                        <span class="value">' . $user["telephone"] . '</span>
-                    </li>';
-                    echo '<a class="btno" href="orders.php">Мои заказы</a>';
+                        <span class="value">(' . $safeLogin . ') (' . $safeRole . ')</span>
+                    </div>
+                    <div class="profile-row"> <span class="label">Телефон</span><br>
+                        <span class="value">' . $safeTelephone . '</span>
+                    </div>
+                    </div>';
+                    echo '<a class="btn btn-primary" href="orders.php">Мои заказы</a>';
                 } else {
                     echo "Пользователь не найден";
                 }
@@ -49,7 +57,8 @@
                 exit();
             }
 ?>
-    </div>
+        </section>
+    </main>
 
 </body>
 </html>
