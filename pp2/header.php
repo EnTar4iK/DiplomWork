@@ -8,6 +8,7 @@ require_once __DIR__ . '/functions.php';
 $isLoggedIn = !empty($_SESSION['logged_in']);
 $isAdmin = $isLoggedIn && (($_SESSION['role'] ?? '') === 'admin');
 $roleLabel = htmlspecialchars((string) ($_SESSION['role'] ?? ''), ENT_QUOTES, 'UTF-8');
+$searchValue = htmlspecialchars((string) ($_GET['q'] ?? ''), ENT_QUOTES, 'UTF-8');
 ?>
 <header class="site-header">
     <a class="brand" href="index.php" aria-label="На главную">
