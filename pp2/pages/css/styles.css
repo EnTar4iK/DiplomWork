@@ -288,6 +288,138 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); box-sha
 .admin-empty, .empty-state { padding: 34px; border-radius: 24px; border: 1px solid var(--line); background: rgba(255,255,255,.07); text-align: center; }
 .empty-state { grid-column: 1 / -1; }
 
+
+
+/* Designer skill upgrade */
+.hero-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+.hero-kicker span,
+.filter-head span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border: 1px solid rgba(102, 228, 255, .22);
+    border-radius: 999px;
+    background: rgba(102, 228, 255, .08);
+    color: #c9f7ff;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+.section-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255,255,255,.07);
+}
+.hero-card-content { display: grid; gap: 12px; }
+.hero-card-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,.18);
+}
+.hero-card-price span { font-size: 24px; font-weight: 950; color: var(--text); }
+.hero-card-price a { color: var(--accent); font-weight: 950; }
+.filter-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.product-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+.product-meta span,
+.product-media-overlay span,
+.checkout-progress span {
+    padding: 8px 10px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.06);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+}
+.product-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.product-footer { align-items: flex-start; }
+.product-media-overlay {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.product-media-overlay span { background: rgba(0,0,0,.55); color: var(--text); backdrop-filter: blur(12px); }
+.confidence-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+}
+.confidence-grid div {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255,255,255,.06);
+}
+.confidence-grid strong { display: block; color: var(--accent); font-size: 24px; }
+.confidence-grid span { color: var(--muted); font-size: 12px; font-weight: 800; }
+.checkout-progress {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.checkout-progress span { text-align: center; }
+.checkout-progress .active { color: #04111a; background: linear-gradient(135deg, var(--accent), var(--accent-3)); }
+.admin-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 22px 0;
+}
+.admin-kpi-row div {
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(255,255,255,.06);
+}
+.admin-kpi-row strong { display: block; color: var(--accent); font-size: 28px; }
+.admin-kpi-row span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .1em; font-weight: 900; }
+.contact-card, .info-card { position: relative; overflow: hidden; }
+.contact-card::before, .info-card::before, .category-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+}
+.site-footer {
+    border: 1px solid var(--line);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 34px;
+    background: rgba(255,255,255,.045);
+    margin-bottom: 0;
+}
+@media (max-width: 720px) {
+    .hero-kicker, .product-actions, .product-media-overlay { flex-direction: column; align-items: stretch; }
+    .product-meta, .confidence-grid, .checkout-progress, .admin-kpi-row { grid-template-columns: 1fr; }
+    .product-footer { gap: 16px; }
+    .product-footer, .filter-head { flex-direction: column; align-items: stretch; }
+}
+
 @media (max-width: 1080px) {
     .site-header { border-radius: 28px; align-items: flex-start; flex-direction: column; }
     .main-nav, .header-actions { width: 100%; justify-content: flex-start; }

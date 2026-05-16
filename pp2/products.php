@@ -87,8 +87,13 @@ $stmt->close();
 <main class="page-shell catalog-page">
     <section class="catalog-hero">
         <div>
+            <div class="hero-kicker">
+                <span>Фильтры</span>
+                <span>Сортировка</span>
+                <span>Реальные категории</span>
+            </div>
             <p class="eyebrow">Каталог товаров</p>
-            <h1>Электроника в наличии и под заказ</h1>
+            <h1>Каталог, который помогает выбрать быстрее</h1>
             <p>
                 Ноутбуки, компьютеры, мониторы, видеокарты, SSD, периферия и кресла.
                 Цены и наличие могут отличаться в розничных магазинах, менеджер подтвердит заказ.
@@ -102,7 +107,10 @@ $stmt->close();
 
     <form method="GET" class="catalog-layout">
         <aside class="catalog-filters">
-            <h2>Фильтры</h2>
+            <div class="filter-head">
+                <h2>Фильтры</h2>
+                <span><?= count($products) ?> найдено</span>
+            </div>
 
             <label>
                 Поиск
@@ -169,12 +177,19 @@ $stmt->close();
                         <h3><a href="product.php?id=<?= (int) $product['id'] ?>"><?= h($product['name']) ?></a></h3>
                         <p><?= h($product['short_description']) ?></p>
                         <div class="stock-line">
-                            <span><?= (int) $product['stock'] > 0 ? 'В наличии' : 'Под заказ' ?></span>
+                            <span><?= (int) $product['stock'] > 0 ? 'В наличии: ' . (int) $product['stock'] . ' шт.' : 'Под заказ' ?></span>
                             <span>Код: <?= (int) $product['id'] ?></span>
+                        </div>
+                        <div class="product-meta">
+                            <span>Подтверждение менеджером</span>
+                            <span>Сервис DАЙКОМ</span>
                         </div>
                         <div class="product-footer">
                             <strong><?= money($product['price']) ?></strong>
-                            <a class="btn btn-small" href="add_to_cart.php?id=<?= (int) $product['id'] ?>">В корзину</a>
+                            <div class="product-actions">
+                                <a class="btn btn-small btn-glass" href="product.php?id=<?= (int) $product['id'] ?>">Подробнее</a>
+                                <a class="btn btn-small" href="add_to_cart.php?id=<?= (int) $product['id'] ?>">В корзину</a>
+                            </div>
                         </div>
                     </div>
                 </article>

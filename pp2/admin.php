@@ -37,6 +37,11 @@ $stats = [
 <div class="page-shell admin-page">
     <section class="admin-hero">
         <div>
+            <div class="hero-kicker">
+                <span>Каталог</span>
+                <span>Продажи</span>
+                <span>Пользователи</span>
+            </div>
             <p class="admin-eyebrow">Панель управления</p>
             <h2>Админ-панель DАЙКОМ Store</h2>
             <p class="admin-lead">
@@ -45,6 +50,13 @@ $stats = [
         </div>
 
         <a href="admin_add_product.php" class="admin-btn">Добавить товар</a>
+    </section>
+
+    <section class="admin-kpi-row">
+        <div><strong><?= $stats['products'] ?></strong><span>товаров</span></div>
+        <div><strong><?= $stats['orders'] ?></strong><span>заказов</span></div>
+        <div><strong><?= $stats['newOrders'] ?></strong><span>в работе</span></div>
+        <div><strong><?= money($stats['revenue']) ?></strong><span>оборот</span></div>
     </section>
 
     <section class="admin-grid">

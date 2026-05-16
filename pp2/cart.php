@@ -24,6 +24,11 @@ $cart = get_cart_items($conn);
 
 <main class="page-shell">
     <section class="page-hero compact">
+        <div class="hero-kicker">
+            <span><?= count($cart['items']) ?> позиций</span>
+            <span>Изменение количества</span>
+            <span>Быстрый checkout</span>
+        </div>
         <p class="eyebrow">Корзина</p>
         <h1>Проверьте заказ перед оформлением</h1>
         <p>Можно изменить количество, удалить позиции и перейти к выбору доставки и оплаты.</p>
@@ -60,6 +65,11 @@ $cart = get_cart_items($conn);
 
             <aside class="cart-summary">
                 <h2>Итого</h2>
+                <div class="checkout-progress">
+                    <span class="active">Корзина</span>
+                    <span>Оформление</span>
+                    <span>Подтверждение</span>
+                </div>
                 <div class="summary-row">
                     <span>Товары</span>
                     <strong><?= money($cart['total']) ?></strong>

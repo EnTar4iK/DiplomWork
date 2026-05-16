@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'functions.php';
+$checkoutSteps = checkout_steps();
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -15,6 +16,11 @@ require_once 'functions.php';
 
 <main class="page-shell">
     <section class="page-hero">
+        <div class="hero-kicker">
+            <span>Самовывоз</span>
+            <span>Курьер</span>
+            <span>СБП / карта / счёт</span>
+        </div>
         <p class="eyebrow">Оплата и доставка</p>
         <h1>Получайте технику так, как удобно вам</h1>
         <p>
@@ -52,10 +58,13 @@ require_once 'functions.php';
             <h2>Заказ за 4 шага</h2>
         </div>
         <div class="steps-grid">
-            <article><strong>1</strong><h3>Выберите товар</h3><p>Сравните категории, фильтры и характеристики в каталоге.</p></article>
-            <article><strong>2</strong><h3>Оформите корзину</h3><p>Укажите контакты, способ доставки и комментарий для менеджера.</p></article>
-            <article><strong>3</strong><h3>Оплатите</h3><p>Карта онлайн, СБП, при получении или счёт для юридического лица.</p></article>
-            <article><strong>4</strong><h3>Получите заказ</h3><p>Самовывоз, курьер по Шахтам или отправка транспортной компанией.</p></article>
+            <?php foreach ($checkoutSteps as $step): ?>
+                <article>
+                    <strong><?= h($step[0]) ?></strong>
+                    <h3><?= h($step[1]) ?></h3>
+                    <p><?= h($step[2]) ?></p>
+                </article>
+            <?php endforeach; ?>
         </div>
     </section>
 

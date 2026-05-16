@@ -65,6 +65,11 @@ $orders = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <section class="admin-section">
         <div class="admin-toolbar">
             <div>
+                <div class="hero-kicker">
+                    <span><?= count($orders) ?> заказов</span>
+                    <span>Статусы</span>
+                    <span>Оплата и доставка</span>
+                </div>
                 <p class="admin-eyebrow">Продажи</p>
                 <h2>Управление заказами</h2>
                 <p class="admin-lead">

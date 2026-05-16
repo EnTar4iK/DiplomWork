@@ -5,6 +5,8 @@ require_once 'functions.php';
 
 $featuredProducts = fetch_featured_products($conn, 6);
 $categories = fetch_categories($conn);
+$trustFeatures = trust_features();
+$checkoutSteps = checkout_steps();
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -21,12 +23,17 @@ $categories = fetch_categories($conn);
         <section class="hero">
             <div class="hero-grid">
                 <div class="hero-copy">
+                    <div class="hero-kicker">
+                        <span>Daycom inspired</span>
+                        <span>PHP + MySQL</span>
+                        <span>2026 UI</span>
+                    </div>
                     <p class="eyebrow">Продажа и обслуживание компьютерной техники · г. Шахты</p>
-                    <h1>Электроника, которая работает на ваш темп</h1>
+                    <h1>Техника, сервис и доставка в одном цифровом магазине</h1>
                     <p>
-                        DАЙКОМ — локальный магазин техники с 27+ годами опыта, реальными складами,
-                        сервисным центром и доставкой по городу. Собрали витрину ноутбуков, ПК,
-                        видеокарт, мониторов и аксессуаров с быстрым оформлением заказа.
+                        DАЙКОМ Store превращает локальный компьютерный магазин в полноценный ecommerce:
+                        витрина электроники, реальные категории, быстрый checkout, понятная доставка,
+                        оплата картой/СБП/счётом и поддержка сервисного центра.
                     </p>
 
                     <div class="hero-actions">
@@ -35,46 +42,47 @@ $categories = fetch_categories($conn);
                     </div>
 
                     <div class="hero-stats">
-                        <div><strong>27+</strong><span>лет на рынке</span></div>
-                        <div><strong>2</strong><span>магазина в Шахтах</span></div>
-                        <div><strong>24/7</strong><span>онлайн-заказ</span></div>
+                        <?php foreach (array_slice($trustFeatures, 0, 3) as $feature): ?>
+                            <div>
+                                <strong><?= h($feature[0]) ?></strong>
+                                <span><?= h($feature[1]) ?></span>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
                 <div class="hero-card">
                     <span class="hero-card-badge">Хит недели</span>
                     <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=900&q=85" alt="Современный ноутбук на рабочем столе">
-                    <div>
+                    <div class="hero-card-content">
                         <h2>Ноутбуки для учебы, офиса и игр</h2>
                         <p>Подберём модель, установим ПО, перенесём данные и доставим в удобное время.</p>
+                        <div class="hero-card-price">
+                            <span>от 43 999 ₽</span>
+                            <a href="products.php?category=1">Подобрать</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="trust-strip">
-            <article>
-                <span>01</span>
-                <h3>Лучшие цены</h3>
-                <p>Ежедневно сравниваем предложения крупных сетей и даём честную стоимость.</p>
-            </article>
-            <article>
-                <span>02</span>
-                <h3>Сервис рядом</h3>
-                <p>Ремонтируем электронику, компьютеры, ноутбуки и оргтехнику в собственных мастерских.</p>
-            </article>
-            <article>
-                <span>03</span>
-                <h3>Быстрая выдача</h3>
-                <p>Самовывоз из DАЙКОМ или «Компьютерный мир», доставка по Шахтам и отправка ТК.</p>
-            </article>
+            <?php foreach ($trustFeatures as $feature): ?>
+                <article>
+                    <span><?= h($feature[0]) ?></span>
+                    <h3><?= h($feature[1]) ?></h3>
+                    <p><?= h($feature[2]) ?></p>
+                </article>
+            <?php endforeach; ?>
         </section>
 
         <section class="section-block">
             <div class="section-heading">
-                <p class="eyebrow">Категории</p>
-                <h2>Популярные направления</h2>
-                <a href="products.php">Все товары</a>
+                <div>
+                    <p class="eyebrow">Категории</p>
+                    <h2>Покупатель сразу понимает, куда идти</h2>
+                </div>
+                <a class="section-link" href="products.php">Все товары</a>
             </div>
 
             <div class="category-grid">
@@ -89,9 +97,11 @@ $categories = fetch_categories($conn);
 
         <section class="section-block">
             <div class="section-heading">
-                <p class="eyebrow">Витрина</p>
-                <h2>Товары с быстрым заказом</h2>
-                <a href="products.php">Перейти в каталог</a>
+                <div>
+                    <p class="eyebrow">Витрина</p>
+                    <h2>Карточки продают пользу, а не просто цену</h2>
+                </div>
+                <a class="section-link" href="products.php">Перейти в каталог</a>
             </div>
 
             <div class="products-grid">
@@ -113,7 +123,30 @@ $categories = fetch_categories($conn);
                                 <strong><?= money($product['price']) ?></strong>
                                 <a class="btn btn-small" href="add_to_cart.php?id=<?= (int) $product['id'] ?>">В корзину</a>
                             </div>
+                            <div class="stock-line">
+                                <span><?= (int) $product['stock'] > 0 ? 'В наличии' : 'Под заказ' ?></span>
+                                <span><?= h($product['category_name']) ?></span>
+                            </div>
                         </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Путь заказа</p>
+                    <h2>Checkout без лишних шагов</h2>
+                </div>
+                <a class="section-link" href="cart.php">Открыть корзину</a>
+            </div>
+            <div class="steps-grid">
+                <?php foreach ($checkoutSteps as $step): ?>
+                    <article>
+                        <strong><?= h($step[0]) ?></strong>
+                        <h3><?= h($step[1]) ?></h3>
+                        <p><?= h($step[2]) ?></p>
                     </article>
                 <?php endforeach; ?>
             </div>

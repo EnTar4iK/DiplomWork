@@ -69,10 +69,19 @@ if ($product) {
                     <span class="product-badge"><?= h($product['badge']) ?></span>
                 <?php endif; ?>
                 <img src="<?= product_image($product['image']) ?>" alt="<?= h($product['name']) ?>">
+                <div class="product-media-overlay">
+                    <span>Проверка совместимости</span>
+                    <span>Настройка перед выдачей</span>
+                </div>
             </div>
 
             <div class="product-detail-info">
                 <a class="back-link" href="products.php?category=<?= (int) $product['category_id'] ?>">← <?= h($product['category_name']) ?></a>
+                <div class="hero-kicker">
+                    <span><?= h($product['category_name']) ?></span>
+                    <span>Код <?= (int) $product['id'] ?></span>
+                    <span><?= (int) $product['stock'] > 0 ? 'В наличии' : 'Под заказ' ?></span>
+                </div>
                 <h1><?= h($product['name']) ?></h1>
                 <p class="product-lead"><?= h($product['short_description']) ?></p>
 
@@ -89,6 +98,12 @@ if ($product) {
                 <div class="delivery-note">
                     <strong>Доставка и оплата</strong>
                     <p>Самовывоз из двух магазинов в Шахтах, курьер по городу, СБП, карта онлайн, оплата при получении или счёт для организации.</p>
+                </div>
+
+                <div class="confidence-grid">
+                    <div><strong>0 ₽</strong><span>самовывоз</span></div>
+                    <div><strong>СЦ</strong><span>сервис рядом</span></div>
+                    <div><strong>1 день</strong><span>быстрая выдача</span></div>
                 </div>
             </div>
         </section>

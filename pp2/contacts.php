@@ -15,8 +15,13 @@ require_once 'functions.php';
 
 <main class="page-shell">
     <section class="page-hero">
+        <div class="hero-kicker">
+            <span>2 магазина</span>
+            <span>Сервисный центр</span>
+            <span>Живые контакты</span>
+        </div>
         <p class="eyebrow">Контакты</p>
-        <h1>Мы рядом в Шахтах</h1>
+        <h1>Контакты, которые вызывают доверие</h1>
         <p>
             ООО Фирма «Дайком», ИНН 6155021283, ОГРН 1026102774510.
             Продажа, ремонт и обслуживание компьютерной техники и электроники.

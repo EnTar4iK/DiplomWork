@@ -28,6 +28,11 @@ $categories = fetch_categories($conn);
     <section class="admin-section">
         <div class="admin-toolbar">
             <div>
+                <div class="hero-kicker">
+                    <span><?= count($products) ?> товаров</span>
+                    <span>Категории</span>
+                    <span>Остатки</span>
+                </div>
                 <p class="admin-eyebrow">Каталог</p>
                 <h2>Управление товарами</h2>
                 <p class="admin-lead">

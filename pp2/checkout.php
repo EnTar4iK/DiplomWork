@@ -111,6 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <main class="page-shell checkout-page">
     <section class="page-hero compact">
+        <div class="hero-kicker">
+            <span>Контакты</span>
+            <span>Доставка</span>
+            <span>Оплата</span>
+        </div>
         <p class="eyebrow">Checkout</p>
         <h1>Оформление заказа</h1>
         <p>Выберите удобный способ оплаты и доставки. После отправки менеджер DАЙКОМ подтвердит наличие и детали.</p>
@@ -177,6 +182,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <aside class="cart-summary checkout-summary">
             <h2>Ваш заказ</h2>
+            <div class="checkout-progress">
+                <span>Корзина</span>
+                <span class="active">Оформление</span>
+                <span>Подтверждение</span>
+            </div>
             <?php foreach ($cart['items'] as $item): ?>
                 <div class="checkout-item">
                     <span><?= h($item['name']) ?> × <?= (int) $item['quantity'] ?></span>

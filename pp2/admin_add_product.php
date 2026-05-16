@@ -53,6 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="page-shell admin-page">
     <section class="admin-form-card">
+        <div class="hero-kicker">
+            <span>Новая карточка</span>
+            <span>Фото товара</span>
+            <span>Каталог</span>
+        </div>
         <p class="admin-eyebrow">Новая позиция</p>
         <h2>Добавить товар</h2>
         <p class="admin-lead">
