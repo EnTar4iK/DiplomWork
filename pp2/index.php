@@ -24,21 +24,21 @@ $checkoutSteps = checkout_steps();
             <div class="hero-grid">
                 <div class="hero-copy">
                     <div class="hero-kicker">
-                        <span>Daycom inspired</span>
-                        <span>PHP + MySQL</span>
-                        <span>2026 UI</span>
+                        <span class="accent">Best Quality</span>
+                        <span>Fast Shipping</span>
+                        <span class="deep">Secure Payment</span>
                     </div>
-                    <p class="eyebrow">Продажа и обслуживание компьютерной техники · г. Шахты</p>
-                    <h1>Техника, сервис и доставка в одном цифровом магазине</h1>
+                    <p class="eyebrow">Электроника · Сервис · Доставка</p>
+                    <h1>Магазин электроники, который знает, что вам нужно</h1>
                     <p>
-                        DАЙКОМ Store превращает локальный компьютерный магазин в полноценный ecommerce:
-                        витрина электроники, реальные категории, быстрый checkout, понятная доставка,
-                        оплата картой/СБП/счётом и поддержка сервисного центра.
+                        Лучшие гаджеты, ноутбуки, видеокарты и аксессуары — со скидками, гарантией
+                        и быстрой доставкой по Шахтам и России. Помогаем выбрать технику и доводим
+                        сборку до рабочего состояния.
                     </p>
 
                     <div class="hero-actions">
-                        <a class="btn btn-primary" href="products.php">Смотреть каталог</a>
-                        <a class="btn btn-glass" href="delivery.php">Оплата и доставка</a>
+                        <a class="btn btn-primary" href="products.php">Shop Now</a>
+                        <a class="btn btn-glass" href="products.php?sort=price_desc">View Deals</a>
                     </div>
 
                     <div class="hero-stats">
@@ -55,7 +55,7 @@ $checkoutSteps = checkout_steps();
                     <span class="hero-card-badge">Хит недели</span>
                     <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=900&q=85" alt="Современный ноутбук на рабочем столе">
                     <div class="hero-card-content">
-                        <h2>Ноутбуки для учебы, офиса и игр</h2>
+                        <h2>Ноутбуки для учёбы, офиса и игр</h2>
                         <p>Подберём модель, установим ПО, перенесём данные и доставим в удобное время.</p>
                         <div class="hero-card-price">
                             <span>от 43 999 ₽</span>
