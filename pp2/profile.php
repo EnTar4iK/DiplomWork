@@ -1,6 +1,10 @@
 <?php 
     session_start();
     require 'config/db.php'; 
+    require_once 'functions.php';
+
+    require_login();
+    $user = current_user($conn);
 ?>
 
 <!DOCTYPE html>
@@ -9,57 +13,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Личный кабинет</title>
+    <title>Личный кабинет — DАЙКОМ Store</title>
 </head>
 <body>
     <?php require 'header.php';?>
 
     <main class="page-shell">
         <section class="profile-card">
-        <?php
-            require 'config/db.php';
+            <div>
+                <p class="eyebrow">Личный кабинет</p>
+                <h1><?= h($user['login'] ?? 'Пользователь') ?></h1>
+                <p>Здесь хранятся контактные данные, история заказов и быстрые действия покупателя.</p>
+            </div>
 
-            if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+            <div class="profile-grid">
+                <article>
+                    <span>Роль</span>
+                    <strong><?= h($_SESSION['role'] ?? 'user') ?></strong>
+                </article>
+                <article>
+                    <span>Телефон</span>
+                    <strong><?= h($user['telephone'] ?? 'Не указан') ?></strong>
+                </article>
+                <article>
+                    <span>Статус</span>
+                    <strong>Активный клиент</strong>
+                </article>
+            </div>
 
-                    $login = $_SESSION['username'];
-
-                    $sql = "SELECT * FROM users WHERE login = ?";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("s", $login);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-
-                if ($result->num_rows == 1) {
-                    $user = $result->fetch_assoc();
-                    $safeLogin = htmlspecialchars((string) $user["login"], ENT_QUOTES, 'UTF-8');
-                    $safeRole = htmlspecialchars((string) $_SESSION["role"], ENT_QUOTES, 'UTF-8');
-                    $safeTelephone = htmlspecialchars((string) $user["telephone"], ENT_QUOTES, 'UTF-8');
-
-                    echo '
-                    <p class="eyebrow">Личный кабинет</p>
-                    <h1>Профиль покупателя</h1>
-                    <div class="profile-list">
-                    <div class="profile-row">
-                        <span class="label">Логин</span><br>
-                        <span class="value">(' . $safeLogin . ') (' . $safeRole . ')</span>
-                    </div>
-                    <div class="profile-row"> <span class="label">Телефон</span><br>
-                        <span class="value">' . $safeTelephone . '</span>
-                    </div>
-                    </div>';
-                    echo '<a class="btn btn-primary" href="orders.php">Мои заказы</a>';
-                } else {
-                    echo "Пользователь не найден";
-                }
-            } 
-                else {
-                header("Location: auth.php");
-                exit();
-            }
-?>
+            <div class="button-row">
+                <a class="btn btn-primary" href="orders.php">Мои заказы</a>
+                <a class="btn btn-glass" href="products.php">Продолжить покупки</a>
+            </div>
         </section>
     </main>
 
+    <?php require 'footer.php'; ?>
+
 </body>
 </html>
-

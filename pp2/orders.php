@@ -1,16 +1,19 @@
 <?php
 session_start();
 require 'config/db.php';
+require_once 'functions.php';
 
-if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
-    header("Location: auth.php");
-    exit();
+require_login();
+
+$user = current_user($conn);
+$statuses = order_statuses();
+$orders = [];
+
+if ($user) {
+    $userId = (int) $user['id'];
+    $result = $conn->query("SELECT * FROM orders WHERE user_id = $userId ORDER BY id DESC");
+    $orders = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 }
-
-$userLogin = $_SESSION['username'];
-$userRes = $conn->query("SELECT id FROM users WHERE login = '$userLogin'");
-$user = $userRes->fetch_assoc();
-$user_id = $user['id'];
 ?>
 
 <!DOCTYPE html>
@@ -18,53 +21,72 @@ $user_id = $user['id'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои заказы</title>
+    <title>Мои заказы — DАЙКОМ Store</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <?php require 'header.php'; ?>
 
-<?php
-$sql = "SELECT o.*, p.name
-        FROM orders o
-        JOIN products p ON o.product_id = p.id
-        WHERE o.user_id = $user_id
-        ORDER BY o.id DESC";
-
-$result = $conn->query($sql);
-$orders = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
-?>
-
 <main class="page-shell">
-    <section class="page-hero compact-hero">
-        <p class="eyebrow">История покупок</p>
+    <section class="page-hero compact">
+        <p class="eyebrow">Личный кабинет</p>
         <h1>Мои заказы</h1>
-        <p>Здесь отображаются заказы, созданные через корзину текущего аккаунта.</p>
+        <p>История покупок, статусы оплаты и доставки.</p>
     </section>
+
+    <?php if (isset($_GET['created'])): ?>
+        <div class="message-box success">Заказ #<?= (int) $_GET['created'] ?> создан. Мы скоро свяжемся с вами.</div>
+    <?php endif; ?>
 
     <?php if (empty($orders)): ?>
         <section class="empty-state">
             <h2>Заказов пока нет</h2>
-            <p>Перейдите в каталог, добавьте технику в корзину и оформите первый заказ.</p>
-            <a class="btn btn-primary" href="products.php">Перейти в каталог</a>
+            <p>Оформите первый заказ из каталога DАЙКОМ.</p>
+            <a class="btn btn-primary" href="products.php">В каталог</a>
         </section>
     <?php else: ?>
-        <section class="order-list">
-            <?php foreach ($orders as $row): ?>
+        <section class="orders-list">
+            <?php foreach ($orders as $order): ?>
+                <?php
+                $orderId = (int) $order['id'];
+                $itemsResult = $conn->query("SELECT * FROM order_items WHERE order_id = $orderId");
+                $items = $itemsResult ? $itemsResult->fetch_all(MYSQLI_ASSOC) : [];
+                $status = (string) $order['status'];
+                ?>
                 <article class="order-card">
-                    <span class="product-category">Заказ #<?= (int) $row['id'] ?></span>
-                    <h3><?= htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8') ?></h3>
+                    <div class="order-head">
+                        <div>
+                            <span class="product-category">Заказ #<?= $orderId ?></span>
+                            <h2><?= money($order['total_price']) ?></h2>
+                            <p><?= h($order['created_at']) ?></p>
+                        </div>
+                        <span class="status-badge status-<?= h($status) ?>"><?= h($statuses[$status] ?? $status) ?></span>
+                    </div>
+
                     <div class="order-meta">
-                        <p>Количество: <?= (int) $row['quantity'] ?></p>
-                        <p>Сумма: <?= number_format((int) $row['total_price'], 0, ',', ' ') ?> ₽</p>
-                        <p>Дата: <?= htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8') ?></p>
+                        <p>Доставка: <?= h(delivery_methods()[$order['delivery_method']] ?? $order['delivery_method']) ?></p>
+                        <p>Оплата: <?= h(payment_methods()[$order['payment_method']] ?? $order['payment_method']) ?></p>
+                        <?php if (!empty($order['delivery_address'])): ?>
+                            <p>Адрес: <?= h($order['delivery_address']) ?></p>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="order-items">
+                        <?php foreach ($items as $item): ?>
+                            <div>
+                                <span><?= h($item['product_name']) ?> × <?= (int) $item['quantity'] ?></span>
+                                <strong><?= money($item['total_price']) ?></strong>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </article>
             <?php endforeach; ?>
         </section>
     <?php endif; ?>
 </main>
+
+<?php require 'footer.php'; ?>
 
 </body>
 </html>

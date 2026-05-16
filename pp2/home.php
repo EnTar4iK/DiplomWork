@@ -1,5 +1,3 @@
 <?php
-require 'config/db.php';
-require 'header.php';
-
-?>
+header('Location: products.php');
+exit();

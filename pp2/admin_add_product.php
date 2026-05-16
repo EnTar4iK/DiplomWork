@@ -1,25 +1,34 @@
 <?php
 require 'auth_admin.php';
 require 'config/db.php';
+require_once 'functions.php';
 
 $errorMessage = '';
 $name = trim($_POST['name'] ?? '');
 $price = trim($_POST['price'] ?? '');
+$categoryId = (int) ($_POST['category_id'] ?? 0);
+$stock = (int) ($_POST['stock'] ?? 1);
+$badge = trim($_POST['badge'] ?? '');
+$shortDescription = trim($_POST['short_description'] ?? '');
 $description = trim($_POST['description'] ?? '');
+$categories = fetch_categories($conn);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $imageName = basename((string) ($_FILES['image']['name'] ?? ''));
     $imageTmp = $_FILES['image']['tmp_name'] ?? '';
 
-    if ($name === '' || $price === '' || $description === '' || $imageName === '' || !is_uploaded_file($imageTmp)) {
+    if ($name === '' || $price === '' || $shortDescription === '' || $description === '' || $categoryId <= 0 || $imageName === '' || !is_uploaded_file($imageTmp)) {
         $errorMessage = 'Заполните все поля и выберите изображение товара.';
     } else {
         $targetPath = __DIR__ . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $imageName;
 
         if (move_uploaded_file($imageTmp, $targetPath)) {
             $priceValue = (int) $price;
-            $stmt = $conn->prepare("INSERT INTO products (name, price, description, image) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("siss", $name, $priceValue, $description, $imageName);
+            $stmt = $conn->prepare("
+                INSERT INTO products (category_id, name, price, short_description, description, image, stock, badge)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->bind_param("isisssis", $categoryId, $name, $priceValue, $shortDescription, $description, $imageName, $stock, $badge);
             $stmt->execute();
 
             header("Location: admin_products.php");
@@ -44,6 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="page-shell admin-page">
     <section class="admin-form-card">
+        <div class="hero-kicker">
+            <span>Новая карточка</span>
+            <span>Фото товара</span>
+            <span>Каталог</span>
+        </div>
         <p class="admin-eyebrow">Новая позиция</p>
         <h2>Добавить товар</h2>
         <p class="admin-lead">
@@ -64,6 +78,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 required
             >
 
+            <select name="category_id" required>
+                <option value="">Категория</option>
+                <?php foreach ($categories as $category): ?>
+                    <option value="<?= (int) $category['id'] ?>" <?= $categoryId === (int) $category['id'] ? 'selected' : '' ?>>
+                        <?= h($category['name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
             <input
                 type="number"
                 name="price"
@@ -73,6 +96,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 step="1"
                 required
             >
+
+            <input
+                type="number"
+                name="stock"
+                value="<?= (int) $stock ?>"
+                placeholder="Остаток"
+                min="0"
+                step="1"
+                required
+            >
+
+            <input
+                type="text"
+                name="badge"
+                value="<?= h($badge) ?>"
+                placeholder="Бейдж (например, Хит)"
+            >
+
+            <textarea
+                name="short_description"
+                rows="3"
+                placeholder="Краткое описание"
+                required
+            ><?= h($shortDescription) ?></textarea>
 
             <textarea
                 name="description"

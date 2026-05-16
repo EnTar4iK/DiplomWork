@@ -3,75 +3,48 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/functions.php';
+
 $isLoggedIn = !empty($_SESSION['logged_in']);
 $isAdmin = $isLoggedIn && (($_SESSION['role'] ?? '') === 'admin');
 $roleLabel = htmlspecialchars((string) ($_SESSION['role'] ?? ''), ENT_QUOTES, 'UTF-8');
 $searchValue = htmlspecialchars((string) ($_GET['q'] ?? ''), ENT_QUOTES, 'UTF-8');
 ?>
 <header class="site-header">
-    <a class="brand" href="index.php" aria-label="Дайком, на главную">
+    <a class="brand" href="index.php" aria-label="На главную">
         <span class="brand-mark">D</span>
-        <span class="brand-text">
-            <strong>Дайком</strong>
-            <small>Electro Shop</small>
+        <span>
+            <strong>DАЙКОМ Store</strong>
+            <small>Электроника · Шахты</small>
         </span>
     </a>
 
-    <form class="header-search" method="GET" action="products.php">
-        <input type="search" name="q" value="<?= $searchValue ?>" placeholder="Найти технику" aria-label="Поиск товаров">
-        <button type="submit">Найти</button>
-    </form>
-
-    <nav class="desktop-nav" aria-label="Основная навигация">
+    <nav class="main-nav">
         <ul class="nav-list">
             <li><a href="index.php">Главная</a></li>
-
-            <?php if ($isAdmin): ?>
-                <li><a href="admin.php" class="admin-btn">Админ панель</a></li>
-            <?php else: ?>
-                <li><a href="products.php">Продукция</a></li>
-                <li><a href="cart.php">Корзина</a></li>
-
-                <?php if ($isLoggedIn): ?>
-                    <li><a href="orders.php">Заказы</a></li>
-                <?php endif; ?>
-            <?php endif; ?>
+            <li><a href="products.php">Каталог</a></li>
+            <li><a href="delivery.php">Доставка и оплата</a></li>
+            <li><a href="contacts.php">Контакты</a></li>
 
             <?php if ($isLoggedIn): ?>
-                <li><a href="profile.php">Мой кабинет (<?= $roleLabel ?>)</a></li>
-                <li><a href="logout.php">Выход</a></li>
-            <?php else: ?>
-                <li><a href="auth.php">Войти</a></li>
-                <li><a href="register.php">Регистрация</a></li>
-                <li class="nav-status">Гость</li>
+                <li><a href="orders.php">Заказы</a></li>
+            <?php endif; ?>
+
+            <?php if ($isAdmin): ?>
+                <li><a href="admin.php">Админ-панель</a></li>
             <?php endif; ?>
         </ul>
     </nav>
 
-    <details class="mobile-nav">
-        <summary>Меню</summary>
-        <ul class="nav-list">
-            <li><a href="index.php">Главная</a></li>
+    <div class="header-actions">
+        <a class="cart-pill" href="cart.php">Корзина <span><?= cart_count() ?></span></a>
 
-            <?php if ($isAdmin): ?>
-                <li><a href="admin.php" class="admin-btn">Админ панель</a></li>
-            <?php else: ?>
-                <li><a href="products.php">Продукция</a></li>
-                <li><a href="cart.php">Корзина</a></li>
-
-                <?php if ($isLoggedIn): ?>
-                    <li><a href="orders.php">Заказы</a></li>
-                <?php endif; ?>
-            <?php endif; ?>
-
-            <?php if ($isLoggedIn): ?>
-                <li><a href="profile.php">Мой кабинет (<?= $roleLabel ?>)</a></li>
-                <li><a href="logout.php">Выход</a></li>
-            <?php else: ?>
-                <li><a href="auth.php">Войти</a></li>
-                <li><a href="register.php">Регистрация</a></li>
-                <li class="nav-status">Гость</li>
-            <?php endif; ?>
-        </ul>
-    </details>
+        <?php if ($isLoggedIn): ?>
+            <a class="profile-link" href="profile.php">Кабинет <?= $roleLabel !== '' ? '(' . $roleLabel . ')' : '' ?></a>
+            <a class="ghost-link" href="logout.php">Выход</a>
+        <?php else: ?>
+            <a class="profile-link" href="auth.php">Войти</a>
+            <a class="ghost-link" href="register.php">Регистрация</a>
+        <?php endif; ?>
+    </div>
 </header>

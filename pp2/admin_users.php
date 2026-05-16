@@ -1,6 +1,7 @@
 <?php
 require 'auth_admin.php';
 require 'config/db.php';
+require_once 'functions.php';
 
 $search = trim($_GET['search'] ?? '');
 $safeSearch = $conn->real_escape_string($search);
@@ -32,6 +33,11 @@ $users = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <section class="admin-section">
         <div class="admin-toolbar">
             <div>
+                <div class="hero-kicker">
+                    <span><?= count($users) ?> аккаунтов</span>
+                    <span>Роли</span>
+                    <span>Поиск</span>
+                </div>
                 <p class="admin-eyebrow">Пользователи</p>
                 <h2>Управление пользователями</h2>
                 <p class="admin-lead">

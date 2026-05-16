@@ -1,6 +1,7 @@
 <?php
 require 'auth_admin.php';
 require 'config/db.php';
+require_once 'functions.php';
 
 function fetchTotal(mysqli $conn, string $sql): int
 {
@@ -17,7 +18,8 @@ $stats = [
     'products' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM products"),
     'orders' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM orders"),
     'users' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM users"),
-    'newOrders' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM orders WHERE status = 'new'"),
+    'newOrders' => fetchTotal($conn, "SELECT COUNT(*) AS total FROM orders WHERE status IN ('new', 'paid')"),
+    'revenue' => fetchTotal($conn, "SELECT COALESCE(SUM(total_price), 0) AS total FROM orders WHERE status <> 'cancelled'"),
 ];
 ?>
 <!DOCTYPE html>
@@ -35,15 +37,26 @@ $stats = [
 <div class="page-shell admin-page">
     <section class="admin-hero">
         <div>
+            <div class="hero-kicker">
+                <span>Каталог</span>
+                <span>Продажи</span>
+                <span>Пользователи</span>
+            </div>
             <p class="admin-eyebrow">Панель управления</p>
-            <h2>Админ-панель магазина</h2>
+            <h2>Админ-панель DАЙКОМ Store</h2>
             <p class="admin-lead">
-                Здесь собраны все основные действия для управления магазином:
-                товары, заказы, пользователи и быстрый переход к добавлению новых позиций.
+                Управляйте каталогом, заказами с оплатой и доставкой, пользователями и витриной магазина.
             </p>
         </div>
 
         <a href="admin_add_product.php" class="admin-btn">Добавить товар</a>
+    </section>
+
+    <section class="admin-kpi-row">
+        <div><strong><?= $stats['products'] ?></strong><span>товаров</span></div>
+        <div><strong><?= $stats['orders'] ?></strong><span>заказов</span></div>
+        <div><strong><?= $stats['newOrders'] ?></strong><span>в работе</span></div>
+        <div><strong><?= money($stats['revenue']) ?></strong><span>оборот</span></div>
     </section>
 
     <section class="admin-grid">
@@ -71,8 +84,15 @@ $stats = [
         <a href="admin_orders.php?status=new" class="admin-panel-card">
             <span class="admin-card-label">Новые</span>
             <strong><?= $stats['newOrders'] ?></strong>
-            <h3>Новые заказы</h3>
+            <h3>Заказы в работу</h3>
             <p>Отдельный быстрый переход к заказам, которые ещё ждут обработки.</p>
+        </a>
+
+        <a href="admin_orders.php" class="admin-panel-card">
+            <span class="admin-card-label">Оборот</span>
+            <strong><?= money($stats['revenue']) ?></strong>
+            <h3>Выручка</h3>
+            <p>Сумма заказов без отменённых позиций.</p>
         </a>
     </section>
 </div>

@@ -7,7 +7,7 @@ $id = (int)$_GET['id'];
 // удалить картинку
 $result = $conn->query("SELECT image FROM products WHERE id=$id");
 if ($row = $result->fetch_assoc()) {
-    if ($row['image'] && file_exists("images/" . $row['image'])) {
+    if ($row['image'] && strpos($row['image'], 'http') !== 0 && file_exists("images/" . $row['image'])) {
         unlink("images/" . $row['image']);
     }
 }

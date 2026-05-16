@@ -1,12 +1,11 @@
 <?php
 require 'auth_admin.php';
 require 'config/db.php';
+require_once 'functions.php';
 
-$allowedStatuses = [
-    'new' => 'Новый',
-    'processing' => 'В обработке',
-    'done' => 'Выполнен',
-];
+$allowedStatuses = order_statuses();
+$deliveryMethods = delivery_methods();
+$paymentMethods = payment_methods();
 
 if (isset($_POST['update_status'])) {
     $id = (int) ($_POST['order_id'] ?? 0);
@@ -31,15 +30,14 @@ $safeSearch = $conn->real_escape_string($search);
 $safeStatus = $conn->real_escape_string($statusFilter);
 
 $sql = "
-    SELECT o.*, u.login, u.telephone, p.name AS product_name
+    SELECT o.*, u.login, u.telephone
     FROM orders o
     JOIN users u ON o.user_id = u.id
-    JOIN products p ON o.product_id = p.id
     WHERE 1=1
 ";
 
 if ($search !== '') {
-    $sql .= " AND (u.login LIKE '%$safeSearch%' OR u.telephone LIKE '%$safeSearch%')";
+    $sql .= " AND (u.login LIKE '%$safeSearch%' OR u.telephone LIKE '%$safeSearch%' OR o.phone LIKE '%$safeSearch%' OR o.customer_name LIKE '%$safeSearch%')";
 }
 
 if ($statusFilter !== '') {
@@ -67,6 +65,11 @@ $orders = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <section class="admin-section">
         <div class="admin-toolbar">
             <div>
+                <div class="hero-kicker">
+                    <span><?= count($orders) ?> заказов</span>
+                    <span>Статусы</span>
+                    <span>Оплата и доставка</span>
+                </div>
                 <p class="admin-eyebrow">Продажи</p>
                 <h2>Управление заказами</h2>
                 <p class="admin-lead">
@@ -108,7 +111,7 @@ $orders = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                         <div class="admin-list-head">
                             <div>
                                 <span class="admin-card-label">Заказ #<?= (int) $order['id'] ?></span>
-                                <h3><?= htmlspecialchars($order['product_name'], ENT_QUOTES, 'UTF-8') ?></h3>
+                                <h3><?= htmlspecialchars($order['customer_name'], ENT_QUOTES, 'UTF-8') ?></h3>
                             </div>
 
                             <span class="status-badge status-<?= htmlspecialchars($statusKey, ENT_QUOTES, 'UTF-8') ?>">
@@ -117,11 +120,26 @@ $orders = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                         </div>
 
                         <div class="admin-list-meta">
-                            <p>Пользователь: <?= htmlspecialchars($order['login'], ENT_QUOTES, 'UTF-8') ?></p>
-                            <p>Телефон: <?= htmlspecialchars((string) $order['telephone'], ENT_QUOTES, 'UTF-8') ?></p>
-                            <p>Количество: <?= (int) $order['quantity'] ?></p>
-                            <p>Сумма: <?= (int) $order['total_price'] ?> ₽</p>
+                            <p>Аккаунт: <?= htmlspecialchars($order['login'], ENT_QUOTES, 'UTF-8') ?></p>
+                            <p>Телефон: <?= htmlspecialchars((string) ($order['phone'] ?: $order['telephone']), ENT_QUOTES, 'UTF-8') ?></p>
+                            <p>Доставка: <?= htmlspecialchars($deliveryMethods[$order['delivery_method']] ?? $order['delivery_method'], ENT_QUOTES, 'UTF-8') ?></p>
+                            <p>Оплата: <?= htmlspecialchars($paymentMethods[$order['payment_method']] ?? $order['payment_method'], ENT_QUOTES, 'UTF-8') ?></p>
+                            <p>Сумма: <?= money($order['total_price']) ?></p>
                             <p>Дата: <?= htmlspecialchars($order['created_at'], ENT_QUOTES, 'UTF-8') ?></p>
+                        </div>
+
+                        <?php
+                        $orderId = (int) $order['id'];
+                        $itemsResult = $conn->query("SELECT * FROM order_items WHERE order_id = $orderId");
+                        $items = $itemsResult ? $itemsResult->fetch_all(MYSQLI_ASSOC) : [];
+                        ?>
+                        <div class="order-items admin-order-items">
+                            <?php foreach ($items as $item): ?>
+                                <div>
+                                    <span><?= htmlspecialchars($item['product_name'], ENT_QUOTES, 'UTF-8') ?> × <?= (int) $item['quantity'] ?></span>
+                                    <strong><?= money($item['total_price']) ?></strong>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
 
                         <form method="POST" class="admin-inline-form">

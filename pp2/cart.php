@@ -1,38 +1,13 @@
 <?php
 session_start();
 require 'config/db.php';
+require_once 'functions.php';
 
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-$cartItems = [];
-$total = 0;
-
-foreach ($_SESSION['cart'] as $id => $qty) {
-    $productId = (int) $id;
-    $quantity = (int) $qty;
-
-    if ($productId <= 0 || $quantity <= 0) {
-        continue;
-    }
-
-    $sql = "SELECT * FROM products WHERE id = $productId";
-    $result = $conn->query($sql);
-    $product = $result ? $result->fetch_assoc() : null;
-
-    if (!$product) {
-        continue;
-    }
-
-    $sum = (int) $product['price'] * $quantity;
-    $total += $sum;
-    $cartItems[] = [
-        'product' => $product,
-        'quantity' => $quantity,
-        'sum' => $sum,
-    ];
-}
+$cart = get_cart_items($conn);
 ?>
 
 <!DOCTYPE html>
@@ -40,66 +15,78 @@ foreach ($_SESSION['cart'] as $id => $qty) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Корзина</title>
+    <title>Корзина — DАЙКОМ Store</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
 <?php require 'header.php'; ?>
 
-<main class="page-shell cart-page">
-    <section class="page-hero compact-hero">
+<main class="page-shell">
+    <section class="page-hero compact">
+        <div class="hero-kicker">
+            <span><?= count($cart['items']) ?> позиций</span>
+            <span>Изменение количества</span>
+            <span>Быстрый checkout</span>
+        </div>
         <p class="eyebrow">Корзина</p>
-        <h1>Проверьте выбранную технику</h1>
-        <p>Количество, цена и итоговая сумма формируются из текущей сессии корзины.</p>
+        <h1>Проверьте заказ перед оформлением</h1>
+        <p>Можно изменить количество, удалить позиции и перейти к выбору доставки и оплаты.</p>
     </section>
 
-    <?php if (empty($cartItems)): ?>
+    <?php if (empty($cart['items'])): ?>
         <section class="empty-state">
-            <h2>Корзина пока пуста</h2>
-            <p>Добавьте товары из каталога, и они появятся здесь перед оформлением заказа.</p>
-            <a href="products.php" class="btn btn-primary">Перейти в каталог</a>
+            <h2>Корзина пуста</h2>
+            <p>Добавьте товары из каталога — заказ сохранится в текущей сессии.</p>
+            <a class="btn btn-primary" href="products.php">Перейти в каталог</a>
         </section>
     <?php else: ?>
-        <section class="cart-layout">
-            <div class="cart-items">
-                <?php foreach ($cartItems as $item): ?>
-                    <?php $product = $item['product']; ?>
+        <form method="POST" action="update_cart.php" class="cart-layout">
+            <section class="cart-list">
+                <?php foreach ($cart['items'] as $item): ?>
                     <article class="cart-item">
-                        <img
-                            src="images/<?= rawurlencode($product['image']) ?>"
-                            alt="<?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?>"
-                        >
-
+                        <img src="<?= product_image($item['image']) ?>" alt="<?= h($item['name']) ?>">
                         <div>
-                            <span class="product-category">Электроника</span>
-                            <h3><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?></h3>
-                            <p>Цена: <?= number_format((int) $product['price'], 0, ',', ' ') ?> ₽</p>
+                            <span class="product-category"><?= h($item['category_name']) ?></span>
+                            <h3><a href="product.php?id=<?= (int) $item['id'] ?>"><?= h($item['name']) ?></a></h3>
+                            <p><?= h($item['short_description']) ?></p>
+                            <a class="remove-link" href="remove_from_cart.php?id=<?= (int) $item['id'] ?>">Удалить</a>
                         </div>
-
-                        <div class="cart-quantity">
-                            <span>Количество</span>
-                            <strong><?= (int) $item['quantity'] ?></strong>
-                        </div>
-
-                        <div class="cart-sum">
-                            <span>Сумма</span>
-                            <strong><?= number_format((int) $item['sum'], 0, ',', ' ') ?> ₽</strong>
+                        <div class="cart-controls">
+                            <label>
+                                Кол-во
+                                <input type="number" name="quantity[<?= (int) $item['id'] ?>]" value="<?= (int) $item['quantity'] ?>" min="0" max="99">
+                            </label>
+                            <strong><?= money($item['line_total']) ?></strong>
                         </div>
                     </article>
                 <?php endforeach; ?>
-            </div>
+            </section>
 
             <aside class="cart-summary">
-                <p class="eyebrow">Итого</p>
-                <strong><?= number_format($total, 0, ',', ' ') ?> ₽</strong>
-                <p>Заказ будет создан для авторизованного пользователя на следующем шаге.</p>
-                <a href="checkout.php" class="btn btn-primary">Оформить заказ</a>
-                <a href="products.php" class="btn btn-secondary">Продолжить покупки</a>
+                <h2>Итого</h2>
+                <div class="checkout-progress">
+                    <span class="active">Корзина</span>
+                    <span>Оформление</span>
+                    <span>Подтверждение</span>
+                </div>
+                <div class="summary-row">
+                    <span>Товары</span>
+                    <strong><?= money($cart['total']) ?></strong>
+                </div>
+                <div class="summary-row">
+                    <span>Доставка</span>
+                    <strong>уточняется</strong>
+                </div>
+                <p>Менеджер подтвердит наличие, стоимость доставки и удобное время выдачи.</p>
+                <button class="btn btn-glass" type="submit">Обновить корзину</button>
+                <a class="btn btn-primary" href="checkout.php">Оформить заказ</a>
             </aside>
-        </section>
+        </form>
     <?php endif; ?>
 </main>
+
+<?php require 'footer.php'; ?>
 
 </body>
 </html>
