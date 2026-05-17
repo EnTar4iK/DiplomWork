@@ -38,7 +38,7 @@ $checkoutSteps = checkout_steps();
 
                     <div class="hero-actions">
                         <a class="btn btn-primary" href="products.php">Shop Now</a>
-                        <a class="btn btn-glass" href="products.php?sort=price_desc">View Deals</a>
+                        <a class="btn btn-glass" href="products.php?sort=price_asc">View Deals</a>
                     </div>
 
                     <div class="hero-stats">
