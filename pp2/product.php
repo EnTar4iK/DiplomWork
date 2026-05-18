@@ -49,7 +49,7 @@ if ($product) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $product ? h($product['name']) : 'Товар не найден' ?> — DАЙКОМ Store</title>
+    <title><?= $product ? h($product['name']) : 'Товар не найден' ?> — ДАЙКОМ</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>

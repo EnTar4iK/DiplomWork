@@ -13,9 +13,8 @@ $searchValue = htmlspecialchars((string) ($_GET['q'] ?? ''), ENT_QUOTES, 'UTF-8'
 <header class="site-header" data-site-header>
     <div class="brand-row">
         <a class="brand" href="index.php" aria-label="На главную">
-            <span class="brand-mark">D</span>
             <span>
-                <strong>DАЙКОМ Store</strong>
+                <strong>ДАЙКОМ</strong>
                 <small>Электроника · Шахты</small>
             </span>
         </a>

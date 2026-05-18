@@ -1,9 +1,8 @@
 <footer class="site-footer">
     <div>
         <a class="brand footer-brand" href="index.php">
-            <span class="brand-mark">D</span>
             <span>
-                <strong>DАЙКОМ Store</strong>
+                <strong>ДАЙКОМ</strong>
                 <small>Компьютерная техника и сервис</small>
             </span>
         </a>
@@ -15,7 +14,7 @@
 
     <div>
         <h3>Магазины</h3>
-        <p>DАЙКОМ: ул. Советская, 214-а</p>
+        <p>ДАЙКОМ: ул. Советская, 214-а</p>
         <p>Компьютерный мир: пр. Победа Революции, 85</p>
     </div>
 

@@ -14,7 +14,8 @@ $checkoutSteps = checkout_steps();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
-    <title>DАЙКОМ Store — электроника, сервис и доставка</title>
+    <title>ДАЙКОМ — электроника, сервис и доставка</title>
+    <meta name="description" content="ДАЙКОМ — магазин электроники в Шахтах: ноутбуки, смартфоны, наушники и аксессуары со скидками и быстрой доставкой.">
 </head>
 <body>
     <?php require 'header.php'; ?>
@@ -24,9 +25,9 @@ $checkoutSteps = checkout_steps();
             <div class="hero-grid">
                 <div class="hero-copy">
                     <div class="hero-kicker">
-                        <span class="accent">Best Quality</span>
-                        <span>Fast Shipping</span>
-                        <span class="deep">Secure Payment</span>
+                        <span class="accent">Премиум-качество</span>
+                        <span>Быстрая доставка</span>
+                        <span class="deep">Безопасная оплата</span>
                     </div>
                     <p class="eyebrow">Электроника · Сервис · Доставка</p>
                     <h1>Магазин электроники, который знает, что вам нужно</h1>
@@ -37,8 +38,8 @@ $checkoutSteps = checkout_steps();
                     </p>
 
                     <div class="hero-actions">
-                        <a class="btn btn-primary" href="products.php">Shop Now</a>
-                        <a class="btn btn-glass" href="products.php?sort=price_asc">View Deals</a>
+                        <a class="btn btn-primary" href="products.php">В каталог</a>
+                        <a class="btn btn-glass" href="products.php?sort=price_asc">Выгодные предложения</a>
                     </div>
 
                     <div class="hero-stats">
@@ -137,7 +138,7 @@ $checkoutSteps = checkout_steps();
             <div class="section-heading">
                 <div>
                     <p class="eyebrow">Путь заказа</p>
-                    <h2>Checkout без лишних шагов</h2>
+                    <h2>Оформление заказа без лишних шагов</h2>
                 </div>
                 <a class="section-link" href="cart.php">Открыть корзину</a>
             </div>
@@ -154,7 +155,7 @@ $checkoutSteps = checkout_steps();
 
         <section class="service-banner">
             <div>
-                <p class="eyebrow">DАЙКОМ all-in-one</p>
+                <p class="eyebrow">ДАЙКОМ — всё в одном месте</p>
                 <h2>Не просто продаём — запускаем технику под ключ</h2>
                 <p>
                     В одном месте: магазин, склад, сервисный центр, корпоративный отдел и доставка.

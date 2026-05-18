@@ -8,7 +8,7 @@ $checkoutSteps = checkout_steps();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Доставка и оплата — DАЙКОМ Store</title>
+    <title>Доставка и оплата — ДАЙКОМ</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -32,7 +32,7 @@ $checkoutSteps = checkout_steps();
     <section class="info-grid">
         <article class="info-card">
             <span>Самовывоз</span>
-            <h2>DАЙКОМ</h2>
+            <h2>ДАЙКОМ</h2>
             <p>г. Шахты, ул. Советская, 214-а. Пн–пт 9:00–18:00, сб–вс 9:00–17:00.</p>
         </article>
         <article class="info-card">

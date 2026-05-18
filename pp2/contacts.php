@@ -7,7 +7,7 @@ require_once 'functions.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Контакты — DАЙКОМ Store</title>
+    <title>Контакты — ДАЙКОМ</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -31,7 +31,7 @@ require_once 'functions.php';
     <section class="contact-grid">
         <article class="contact-card primary">
             <span>Главный офис</span>
-            <h2>Торгово-сервисный центр DАЙКОМ</h2>
+            <h2>Торгово-сервисный центр ДАЙКОМ</h2>
             <p>Ростовская область, г. Шахты, ул. Советская, 214-а</p>
             <p>Пн–пт 9:00–18:00, сб–вс 9:00–17:00</p>
             <a href="tel:+79185112333">+7 918 511-23-33</a>

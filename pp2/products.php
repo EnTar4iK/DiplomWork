@@ -76,7 +76,7 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог электроники — DАЙКОМ Store</title>
+    <title>Каталог электроники — ДАЙКОМ</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -182,7 +182,7 @@ $stmt->close();
                         </div>
                         <div class="product-meta">
                             <span>Подтверждение менеджером</span>
-                            <span>Сервис DАЙКОМ</span>
+                            <span>Сервис ДАЙКОМ</span>
                         </div>
                         <div class="product-footer">
                             <strong><?= money($product['price']) ?></strong>
