@@ -14,7 +14,8 @@ $checkoutSteps = checkout_steps();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
-    <title>DАЙКОМ Store — электроника, сервис и доставка</title>
+    <title>ДАЙКОМ — электроника, сервис и доставка</title>
+    <meta name="description" content="ДАЙКОМ — магазин электроники в Шахтах: ноутбуки, смартфоны, наушники и аксессуары со скидками и быстрой доставкой.">
 </head>
 <body>
     <?php require 'header.php'; ?>
@@ -24,21 +25,21 @@ $checkoutSteps = checkout_steps();
             <div class="hero-grid">
                 <div class="hero-copy">
                     <div class="hero-kicker">
-                        <span>Daycom inspired</span>
-                        <span>PHP + MySQL</span>
-                        <span>2026 UI</span>
+                        <span class="accent">Премиум-качество</span>
+                        <span>Быстрая доставка</span>
+                        <span class="deep">Безопасная оплата</span>
                     </div>
-                    <p class="eyebrow">Продажа и обслуживание компьютерной техники · г. Шахты</p>
-                    <h1>Техника, сервис и доставка в одном цифровом магазине</h1>
+                    <p class="eyebrow">Электроника · Сервис · Доставка</p>
+                    <h1>Магазин электроники, который знает, что вам нужно</h1>
                     <p>
-                        DАЙКОМ Store превращает локальный компьютерный магазин в полноценный ecommerce:
-                        витрина электроники, реальные категории, быстрый checkout, понятная доставка,
-                        оплата картой/СБП/счётом и поддержка сервисного центра.
+                        Лучшие гаджеты, ноутбуки, видеокарты и аксессуары — со скидками, гарантией
+                        и быстрой доставкой по Шахтам и России. Помогаем выбрать технику и доводим
+                        сборку до рабочего состояния.
                     </p>
 
                     <div class="hero-actions">
-                        <a class="btn btn-primary" href="products.php">Смотреть каталог</a>
-                        <a class="btn btn-glass" href="delivery.php">Оплата и доставка</a>
+                        <a class="btn btn-primary" href="products.php">В каталог</a>
+                        <a class="btn btn-glass" href="products.php?sort=price_asc">Выгодные предложения</a>
                     </div>
 
                     <div class="hero-stats">
@@ -55,7 +56,7 @@ $checkoutSteps = checkout_steps();
                     <span class="hero-card-badge">Хит недели</span>
                     <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=900&q=85" alt="Современный ноутбук на рабочем столе">
                     <div class="hero-card-content">
-                        <h2>Ноутбуки для учебы, офиса и игр</h2>
+                        <h2>Ноутбуки для учёбы, офиса и игр</h2>
                         <p>Подберём модель, установим ПО, перенесём данные и доставим в удобное время.</p>
                         <div class="hero-card-price">
                             <span>от 43 999 ₽</span>
@@ -80,7 +81,7 @@ $checkoutSteps = checkout_steps();
             <div class="section-heading">
                 <div>
                     <p class="eyebrow">Категории</p>
-                    <h2>Покупатель сразу понимает, куда идти</h2>
+                    <h2>Выберите категорию товаров</h2>
                 </div>
                 <a class="section-link" href="products.php">Все товары</a>
             </div>
@@ -137,7 +138,7 @@ $checkoutSteps = checkout_steps();
             <div class="section-heading">
                 <div>
                     <p class="eyebrow">Путь заказа</p>
-                    <h2>Checkout без лишних шагов</h2>
+                    <h2>Оформление заказа без лишних шагов</h2>
                 </div>
                 <a class="section-link" href="cart.php">Открыть корзину</a>
             </div>
@@ -154,7 +155,7 @@ $checkoutSteps = checkout_steps();
 
         <section class="service-banner">
             <div>
-                <p class="eyebrow">DАЙКОМ all-in-one</p>
+                <p class="eyebrow">ДАЙКОМ — всё в одном месте</p>
                 <h2>Не просто продаём — запускаем технику под ключ</h2>
                 <p>
                     В одном месте: магазин, склад, сервисный центр, корпоративный отдел и доставка.

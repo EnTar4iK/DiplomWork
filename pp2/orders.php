@@ -21,7 +21,7 @@ if ($user) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои заказы — DАЙКОМ Store</title>
+    <title>Мои заказы — ДАЙКОМ</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -42,7 +42,7 @@ if ($user) {
     <?php if (empty($orders)): ?>
         <section class="empty-state">
             <h2>Заказов пока нет</h2>
-            <p>Оформите первый заказ из каталога DАЙКОМ.</p>
+            <p>Оформите первый заказ из каталога ДАЙКОМ.</p>
             <a class="btn btn-primary" href="products.php">В каталог</a>
         </section>
     <?php else: ?>

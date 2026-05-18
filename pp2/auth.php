@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_enter'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Вход — DАЙКОМ Store</title>
+    <title>Вход — ДАЙКОМ</title>
 </head>
 <body>
 
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_enter'])) {
 <main class="auth-page">
     <section class="auth-card">
         <p class="eyebrow">Личный кабинет</p>
-        <h1>Вход в DАЙКОМ Store</h1>
+        <h1>Вход в ДАЙКОМ</h1>
         <p>Войдите, чтобы оформить заказ, отслеживать доставку и видеть историю покупок.</p>
 
         <?php if ($error_message !== ''): ?>

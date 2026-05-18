@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оформление заказа — DАЙКОМ Store</title>
+    <title>Оформление заказа — ДАЙКОМ</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <p class="eyebrow">Checkout</p>
         <h1>Оформление заказа</h1>
-        <p>Выберите удобный способ оплаты и доставки. После отправки менеджер DАЙКОМ подтвердит наличие и детали.</p>
+        <p>Выберите удобный способ оплаты и доставки. После отправки менеджер ДАЙКОМ подтвердит наличие и детали.</p>
     </section>
 
     <?php if (!empty($errors)): ?>
