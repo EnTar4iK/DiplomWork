@@ -81,7 +81,7 @@ $checkoutSteps = checkout_steps();
             <div class="section-heading">
                 <div>
                     <p class="eyebrow">Категории</p>
-                    <h2>Покупатель сразу понимает, куда идти</h2>
+                    <h2>Выберите категорию товаров</h2>
                 </div>
                 <a class="section-link" href="products.php">Все товары</a>
             </div>
