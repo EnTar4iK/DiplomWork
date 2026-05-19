@@ -7,10 +7,25 @@ require_once __DIR__ . '/functions.php';
 
 $isLoggedIn = !empty($_SESSION['logged_in']);
 $isAdmin = $isLoggedIn && (($_SESSION['role'] ?? '') === 'admin');
-$roleLabel = htmlspecialchars((string) ($_SESSION['role'] ?? ''), ENT_QUOTES, 'UTF-8');
 $searchValue = htmlspecialchars((string) ($_GET['q'] ?? ''), ENT_QUOTES, 'UTF-8');
 ?>
-<header class="site-header" data-site-header>
+<?php if ($isAdmin): ?>
+<header class="site-header site-header-admin">
+    <a class="brand" href="profile.php" aria-label="Личный кабинет администратора">
+        <span>
+            <strong>ДАЙКОМ</strong>
+            <small>Панель администратора</small>
+        </span>
+    </a>
+    <nav class="admin-mini-nav" aria-label="Меню администратора">
+        <a class="profile-link" href="admin.php">Админ-панель</a>
+        <a class="ghost-link" href="logout.php">Выход</a>
+    </nav>
+</header>
+<?php else: ?>
+<header class="site-header">
+    <input type="checkbox" id="nav-toggle-state" class="nav-toggle-state" aria-hidden="true">
+
     <div class="brand-row">
         <a class="brand" href="index.php" aria-label="На главную">
             <span>
@@ -19,9 +34,9 @@ $searchValue = htmlspecialchars((string) ($_GET['q'] ?? ''), ENT_QUOTES, 'UTF-8'
             </span>
         </a>
 
-        <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" data-nav-toggle>
+        <label for="nav-toggle-state" class="nav-toggle" aria-label="Открыть меню">
             <span></span>
-        </button>
+        </label>
     </div>
 
     <nav class="main-nav" aria-label="Основная навигация">
@@ -33,10 +48,6 @@ $searchValue = htmlspecialchars((string) ($_GET['q'] ?? ''), ENT_QUOTES, 'UTF-8'
 
             <?php if ($isLoggedIn): ?>
                 <li><a href="orders.php">Заказы</a></li>
-            <?php endif; ?>
-
-            <?php if ($isAdmin): ?>
-                <li><a href="admin.php">Админ-панель</a></li>
             <?php endif; ?>
         </ul>
     </nav>
@@ -55,7 +66,7 @@ $searchValue = htmlspecialchars((string) ($_GET['q'] ?? ''), ENT_QUOTES, 'UTF-8'
         <a class="cart-pill" href="cart.php">Корзина <span><?= cart_count() ?></span></a>
 
         <?php if ($isLoggedIn): ?>
-            <a class="profile-link" href="profile.php">Кабинет <?= $roleLabel !== '' ? '(' . $roleLabel . ')' : '' ?></a>
+            <a class="profile-link" href="profile.php">Кабинет</a>
             <a class="ghost-link" href="logout.php">Выход</a>
         <?php else: ?>
             <a class="profile-link" href="auth.php">Войти</a>
@@ -63,16 +74,4 @@ $searchValue = htmlspecialchars((string) ($_GET['q'] ?? ''), ENT_QUOTES, 'UTF-8'
         <?php endif; ?>
     </div>
 </header>
-
-<script>
-(function () {
-    var toggle = document.querySelector('[data-nav-toggle]');
-    var header = document.querySelector('[data-site-header]');
-    if (!toggle || !header) return;
-    toggle.addEventListener('click', function () {
-        var open = header.classList.toggle('is-open');
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        toggle.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
-    });
-})();
-</script>
+<?php endif; ?>

@@ -178,12 +178,12 @@ $adminActive = 'products';
             <div class="admin-edit-actions">
                 <button class="btn btn-primary" type="submit">Сохранить изменения</button>
                 <a class="btn btn-secondary" href="admin_products.php">Отменить</a>
-                <a
-                    class="btn btn-danger"
-                    href="delete_product.php?id=<?= (int) $product['id'] ?>"
-                    onclick="return confirm('Удалить товар «<?= h(addslashes($product['name'])) ?>»?')"
-                >Удалить товар</a>
             </div>
+        </form>
+
+        <form method="POST" action="delete_product.php" class="admin-edit-delete">
+            <input type="hidden" name="id" value="<?= (int) $product['id'] ?>">
+            <button class="btn btn-danger" type="submit">Удалить товар</button>
         </form>
     </section>
 </main>
