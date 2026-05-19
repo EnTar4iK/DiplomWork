@@ -236,11 +236,10 @@ $adminActive = 'products';
                             <td class="admin-table-actions">
                                 <a class="btn btn-small btn-secondary" href="admin_edit_product.php?id=<?= $pid ?>">Редактировать</a>
                                 <a class="btn btn-small btn-ghost-link" href="product.php?id=<?= $pid ?>" target="_blank" rel="noopener">Открыть</a>
-                                <a
-                                    class="btn btn-small btn-danger"
-                                    href="delete_product.php?id=<?= $pid ?>"
-                                    onclick="return confirm('Удалить товар «<?= h(addslashes($product['name'])) ?>»?')"
-                                >Удалить</a>
+                                <form method="POST" action="delete_product.php" class="admin-inline-delete">
+                                    <input type="hidden" name="id" value="<?= $pid ?>">
+                                    <button class="btn btn-small btn-danger" type="submit">Удалить</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>

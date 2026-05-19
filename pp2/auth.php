@@ -28,7 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit_enter'])) {
             $_SESSION['username'] = $user['login'];
             $_SESSION['role'] = $user['role'];
 
-            header("Location: index.php");
+            $redirect = ($user['role'] === 'admin') ? 'profile.php' : 'index.php';
+            header("Location: $redirect");
             exit();
         }
 

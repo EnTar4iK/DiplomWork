@@ -105,6 +105,14 @@ if ($res) {
 $paymentMethods = payment_methods();
 $adminActive = 'dashboard';
 ?>
+<?php
+$revenueMax = !empty($revenueData) ? max($revenueData) : 0;
+$ordersMax = !empty($ordersByDayData) ? max($ordersByDayData) : 0;
+$statusTotal = array_sum($statusData);
+$topMax = !empty($topProductsData) ? max($topProductsData) : 0;
+$revenueTotal14 = array_sum($revenueData);
+$orders14Total = array_sum($ordersByDayData);
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -112,7 +120,6 @@ $adminActive = 'dashboard';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Дашборд — ДАЙКОМ</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 </head>
 <body>
 
@@ -162,49 +169,123 @@ $adminActive = 'dashboard';
     </section>
 
     <section class="admin-dashboard-grid">
-        <article class="admin-chart-card admin-chart-wide">
+        <article class="admin-stats-card admin-stats-wide">
             <header>
                 <h2>Выручка по дням</h2>
-                <p>Последние 14 дней, заказы без отменённых</p>
+                <p>Последние 14 дней, без отменённых · сумма: <strong><?= money($revenueTotal14) ?></strong></p>
             </header>
-            <div class="admin-chart-canvas-wrap">
-                <canvas id="revenueChart" aria-label="График выручки по дням" role="img"></canvas>
-            </div>
+            <table class="admin-stats-table admin-stats-table-bars">
+                <thead>
+                    <tr><th>Дата</th><th>Выручка</th><th>Доля</th></tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($revenueLabels as $i => $label):
+                        $value = $revenueData[$i] ?? 0;
+                        $pct = $revenueMax > 0 ? round(($value / $revenueMax) * 100) : 0;
+                    ?>
+                        <tr>
+                            <td><?= h($label) ?></td>
+                            <td><strong><?= money($value) ?></strong></td>
+                            <td>
+                                <span class="admin-stats-bar">
+                                    <span class="admin-stats-bar-fill" style="width: <?= $pct ?>%"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </article>
 
-        <article class="admin-chart-card">
+        <article class="admin-stats-card">
             <header>
                 <h2>Статусы заказов</h2>
-                <p>Распределение всех заказов</p>
+                <p>Распределение всех заказов · всего: <strong><?= $statusTotal ?></strong></p>
             </header>
-            <div class="admin-chart-canvas-wrap">
-                <canvas id="statusChart" aria-label="Распределение заказов по статусам" role="img"></canvas>
-            </div>
+            <?php if (empty($statusLabels)): ?>
+                <p class="admin-stats-empty">Заказов пока нет.</p>
+            <?php else: ?>
+                <ul class="admin-stats-list">
+                    <?php foreach ($statusLabels as $i => $label):
+                        $value = $statusData[$i] ?? 0;
+                        $pct = $statusTotal > 0 ? round(($value / $statusTotal) * 100) : 0;
+                    ?>
+                        <li>
+                            <div class="admin-stats-list-head">
+                                <span><?= h($label) ?></span>
+                                <strong><?= $value ?> · <?= $pct ?>%</strong>
+                            </div>
+                            <span class="admin-stats-bar">
+                                <span class="admin-stats-bar-fill" style="width: <?= $pct ?>%"></span>
+                            </span>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
         </article>
     </section>
 
     <section class="admin-dashboard-grid">
-        <article class="admin-chart-card admin-chart-wide">
+        <article class="admin-stats-card admin-stats-wide">
             <header>
                 <h2>Топ-5 товаров</h2>
                 <p>По количеству проданных единиц</p>
             </header>
-            <div class="admin-chart-canvas-wrap">
-                <canvas id="topProductsChart" aria-label="Топ товаров по продажам" role="img"></canvas>
-            </div>
             <?php if (empty($topProductsRows)): ?>
-                <p class="admin-chart-empty">Данных о продажах пока нет.</p>
+                <p class="admin-stats-empty">Данных о продажах пока нет.</p>
+            <?php else: ?>
+                <table class="admin-stats-table">
+                    <thead>
+                        <tr><th>#</th><th>Товар</th><th>Продано, шт.</th><th>Выручка</th><th>Доля</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($topProductsRows as $i => $row):
+                            $qty = (int) $row['qty'];
+                            $pct = $topMax > 0 ? round(($qty / $topMax) * 100) : 0;
+                        ?>
+                            <tr>
+                                <td><?= $i + 1 ?></td>
+                                <td><strong><?= h($row['product_name']) ?></strong></td>
+                                <td><?= $qty ?></td>
+                                <td><?= money($row['revenue']) ?></td>
+                                <td>
+                                    <span class="admin-stats-bar">
+                                        <span class="admin-stats-bar-fill" style="width: <?= $pct ?>%"></span>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             <?php endif; ?>
         </article>
 
-        <article class="admin-chart-card">
+        <article class="admin-stats-card">
             <header>
                 <h2>Заказы по дням</h2>
-                <p>Количество за 14 дней</p>
+                <p>Последние 14 дней · всего: <strong><?= $orders14Total ?></strong></p>
             </header>
-            <div class="admin-chart-canvas-wrap">
-                <canvas id="ordersChart" aria-label="Количество заказов по дням" role="img"></canvas>
-            </div>
+            <table class="admin-stats-table admin-stats-table-bars">
+                <thead>
+                    <tr><th>Дата</th><th>Заказов</th><th>Доля</th></tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($revenueLabels as $i => $label):
+                        $value = $ordersByDayData[$i] ?? 0;
+                        $pct = $ordersMax > 0 ? round(($value / $ordersMax) * 100) : 0;
+                    ?>
+                        <tr>
+                            <td><?= h($label) ?></td>
+                            <td><strong><?= $value ?></strong></td>
+                            <td>
+                                <span class="admin-stats-bar">
+                                    <span class="admin-stats-bar-fill" style="width: <?= $pct ?>%"></span>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </article>
     </section>
 
@@ -266,28 +347,6 @@ $adminActive = 'dashboard';
 </main>
 
 <?php require 'footer.php'; ?>
-
-<script>
-window.adminDashboard = {
-    revenue: {
-        labels: <?= json_encode($revenueLabels, JSON_UNESCAPED_UNICODE) ?>,
-        data: <?= json_encode($revenueData) ?>
-    },
-    ordersByDay: {
-        labels: <?= json_encode($revenueLabels, JSON_UNESCAPED_UNICODE) ?>,
-        data: <?= json_encode($ordersByDayData) ?>
-    },
-    status: {
-        labels: <?= json_encode($statusLabels, JSON_UNESCAPED_UNICODE) ?>,
-        data: <?= json_encode($statusData) ?>
-    },
-    topProducts: {
-        labels: <?= json_encode($topProductsLabels, JSON_UNESCAPED_UNICODE) ?>,
-        data: <?= json_encode($topProductsData) ?>
-    }
-};
-</script>
-<script src="js/admin-charts.js" defer></script>
 
 </body>
 </html>

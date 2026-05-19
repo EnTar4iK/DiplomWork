@@ -322,11 +322,11 @@ $adminActive = 'orders';
                                         <?php endif; ?>
                                     </div>
                                 </details>
-                                <a
-                                    class="btn btn-small btn-danger"
-                                    href="delete_order.php?id=<?= $orderId ?>&amp;<?= h($queryString) ?>"
-                                    onclick="return confirm('Удалить заказ #<?= $orderId ?>? Действие необратимо.')"
-                                >Удалить</a>
+                                <form method="POST" action="delete_order.php" class="admin-inline-delete">
+                                    <input type="hidden" name="id" value="<?= $orderId ?>">
+                                    <input type="hidden" name="return_query" value="<?= h($queryString) ?>">
+                                    <button class="btn btn-small btn-danger" type="submit">Удалить</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
